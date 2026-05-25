@@ -81,6 +81,19 @@ select, input[type="number"], input[type="range"] {
 
 label { display: block; margin: 8px 0 4px; color: var(--muted); font-size: 12px; }
 
+.weight-slider { margin-bottom: 10px; }
+.weight-slider .weight-head {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin: 8px 0 2px;
+}
+.weight-slider .weight-name { color: var(--text); font-size: 13px; font-weight: 600; }
+.weight-slider .weight-value { color: var(--accent); font-weight: 600; font-size: 12px; }
+.weight-slider .weight-hint { color: var(--muted); font-size: 11px; margin: 2px 0 4px; line-height: 1.35; }
+.weight-slider .weight-ends {
+  display: flex; justify-content: space-between;
+  color: var(--muted); font-size: 10px; margin-top: 2px;
+}
+
 .row { display: flex; gap: 6px; margin-bottom: 6px; }
 .row > * { flex: 1; }
 

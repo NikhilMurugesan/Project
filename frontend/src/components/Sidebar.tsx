@@ -34,12 +34,35 @@ export default function Sidebar({
       </select>
 
       <h3 style={{ marginTop: 16 }}>Weights</h3>
-      <WeightSlider label="Distance" value={weights.distance}
-        onChange={(v) => onWeightsChange({ ...weights, distance: v })} />
-      <WeightSlider label="Priority" value={weights.priority}
-        onChange={(v) => onWeightsChange({ ...weights, priority: v })} />
-      <WeightSlider label="Workload balance" value={weights.workload}
-        onChange={(v) => onWeightsChange({ ...weights, workload: v })} />
+      <p className="weight-hint">
+        Each slider sets how much that factor counts when scoring a (truck, order) match.
+        <strong> 0 = ignore</strong> · <strong>1 = normal</strong> · <strong>2 = double weight</strong>.
+      </p>
+
+      <WeightSlider
+        label="Distance"
+        value={weights.distance}
+        onChange={(v) => onWeightsChange({ ...weights, distance: v })}
+        hint="How much extra driving (km) hurts a match."
+        lowEnd="Ignore distance · trucks may take long detours"
+        highEnd="Punish detours · pick the closest truck"
+      />
+      <WeightSlider
+        label="Priority"
+        value={weights.priority}
+        onChange={(v) => onWeightsChange({ ...weights, priority: v })}
+        hint="How much a high-priority parcel is favoured over a low one."
+        lowEnd="Treat all parcels equally"
+        highEnd="Strongly prefer priority-5 parcels first"
+      />
+      <WeightSlider
+        label="Workload balance"
+        value={weights.workload}
+        onChange={(v) => onWeightsChange({ ...weights, workload: v })}
+        hint="How much a truck already busier than the fleet average is penalised."
+        lowEnd="One truck may do most of the work"
+        highEnd="Spread parcels evenly across trucks"
+      />
 
       <h3 style={{ marginTop: 16 }}>Run</h3>
       <div className="row">
@@ -58,15 +81,33 @@ export default function Sidebar({
   );
 }
 
-function WeightSlider({ label, value, onChange }: { label: string; value: number; onChange: (v: number) => void; }) {
+function WeightSlider({
+  label, value, onChange, hint, lowEnd, highEnd,
+}: {
+  label: string;
+  value: number;
+  onChange: (v: number) => void;
+  hint: string;
+  lowEnd: string;
+  highEnd: string;
+}) {
   return (
-    <div>
-      <label>{label}: <strong>{value.toFixed(2)}</strong></label>
+    <div className="weight-slider">
+      <div className="weight-head">
+        <span className="weight-name">{label}</span>
+        <span className="weight-value">{value.toFixed(2)}</span>
+      </div>
+      <div className="weight-hint">{hint}</div>
       <input
         type="range" min={0} max={2} step={0.05}
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
+        aria-label={label}
       />
+      <div className="weight-ends">
+        <span>0 · {lowEnd}</span>
+        <span>2 · {highEnd}</span>
+      </div>
     </div>
   );
 }
