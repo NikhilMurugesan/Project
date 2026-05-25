@@ -33,14 +33,13 @@ app.add_middleware(
 @app.on_event("startup")
 def _on_startup() -> None:
     init_db()
-    # First-run friendliness: if the DB is empty, drop in three demo
-    # scenarios so the UI has something to show immediately.
+    # First-run friendliness: if the DB is empty, drop in the three
+    # hand-crafted demo scenarios so the UI has something to show
+    # immediately. See seed.py for what each one is designed to stress.
     db = SessionLocal()
     try:
         if db.query(models.Scenario).count() == 0:
-            seed.create_scenario(db, size="small", seed=1, name="small-demo")
-            seed.create_scenario(db, size="medium", seed=42, name="medium-demo")
-            seed.create_scenario(db, size="large", seed=7, name="large-demo")
+            seed.seed_defaults(db)
     finally:
         db.close()
 

@@ -1,14 +1,12 @@
-// Left-hand control panel: scenario picker, new-scenario form, the three
-// weight sliders, and the buttons that fire off algorithm runs.
-import { useEffect, useState } from 'react';
+// Left-hand control panel: scenario picker, the three weight sliders, and
+// the buttons that fire off algorithm runs. The three demo scenarios are
+// seeded on the backend -- nothing to create or delete from the UI.
 import type { Weights } from '../types';
 
 interface Props {
   scenarios: { id: number; name: string }[];
   selectedId: number | null;
   onSelect: (id: number) => void;
-  onCreate: (size: 'small' | 'medium' | 'large', seed: number) => void;
-  onDelete: (id: number) => void;
   weights: Weights;
   onWeightsChange: (w: Weights) => void;
   onRun: (algorithm: 'greedy' | 'hungarian') => void;
@@ -17,12 +15,9 @@ interface Props {
 }
 
 export default function Sidebar({
-  scenarios, selectedId, onSelect, onCreate, onDelete,
+  scenarios, selectedId, onSelect,
   weights, onWeightsChange, onRun, onCompare, running,
 }: Props) {
-  const [size, setSize] = useState<'small' | 'medium' | 'large'>('medium');
-  const [seed, setSeed] = useState(42);
-
   return (
     <div className="sidebar">
       <h2>Allocation Engine</h2>
@@ -34,33 +29,9 @@ export default function Sidebar({
       >
         <option value="" disabled>— pick —</option>
         {scenarios.map((s) => (
-          <option key={s.id} value={s.id}>{s.id}. {s.name}</option>
+          <option key={s.id} value={s.id}>{s.name}</option>
         ))}
       </select>
-
-      <div className="row" style={{ marginTop: 8 }}>
-        <select value={size} onChange={(e) => setSize(e.target.value as any)}>
-          <option value="small">small</option>
-          <option value="medium">medium</option>
-          <option value="large">large</option>
-        </select>
-        <input
-          type="number"
-          value={seed}
-          onChange={(e) => setSeed(Number(e.target.value))}
-          title="seed"
-        />
-      </div>
-      <div className="row">
-        <button onClick={() => onCreate(size, seed)}>+ New scenario</button>
-        <button
-          onClick={() => selectedId && onDelete(selectedId)}
-          disabled={!selectedId}
-          title="Delete selected scenario"
-        >
-          Delete
-        </button>
-      </div>
 
       <h3 style={{ marginTop: 16 }}>Weights</h3>
       <WeightSlider label="Distance" value={weights.distance}

@@ -49,24 +49,6 @@ export default function App() {
     api.getScenario(selectedId).then(setScenario).catch((e) => setError(String(e)));
   }, [selectedId]);
 
-  const handleCreate = async (size: 'small' | 'medium' | 'large', seed: number) => {
-    try {
-      const s = await api.createScenario(size, seed);
-      const rows = await api.listScenarios();
-      setScenarios(rows);
-      setSelectedId(s.id);
-    } catch (e) { setError(String(e)); }
-  };
-
-  const handleDelete = async (id: number) => {
-    try {
-      await api.deleteScenario(id);
-      const rows = await api.listScenarios();
-      setScenarios(rows);
-      setSelectedId(rows.length ? rows[0].id : null);
-    } catch (e) { setError(String(e)); }
-  };
-
   const handleRun = async (algorithm: 'greedy' | 'hungarian') => {
     if (selectedId == null) return;
     setRunning(true);
@@ -101,8 +83,6 @@ export default function App() {
         scenarios={scenarios}
         selectedId={selectedId}
         onSelect={setSelectedId}
-        onCreate={handleCreate}
-        onDelete={handleDelete}
         weights={weights}
         onWeightsChange={setWeights}
         onRun={handleRun}
